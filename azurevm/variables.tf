@@ -10,10 +10,10 @@ variable "location" {
 
 variable "username" {
   description = "The username to log in"
-  default = "azureuser"
+  default     = "azureuser"
 }
 
 variable "password" {
   description = "The password to log in"
-  default = "VMware1!SDDC"
+  default     = "VMware1!SDDC"
 }
