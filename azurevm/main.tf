@@ -2,8 +2,36 @@ provider "azurerm" {
   features {}
 }
 
+terraform {
+  required_providers {
+    azurecaf = {
+      source = "aztfmod/azurecaf"
+    }
+  }
+}
+
+# provider "azurecaf" {
+#   # Configuration options
+# }
+
+resource "azurecaf_name" "rg_name" {
+  resource_type = "azurerm_resource_group"
+  prefixes      = ["a", "b"]
+  suffixes      = ["y", "z"]
+  random_length = 5
+  clean_input   = true
+}
+
+resource "azurecaf_name" "vnet_name" {
+  resource_type = "azurerm_virtual_network"
+  prefixes      = ["a", "b"]
+  suffixes      = ["y", "z"]
+  random_length = 5
+  clean_input   = true
+}
+
 resource "azurerm_resource_group" "main" {
-  name     = "${var.prefix}-resources"
+  name     = azurecaf_name.rg_name.result
   location = var.location
 }
 
@@ -15,8 +43,10 @@ resource "azurerm_resource_group" "main" {
 # }
 
 module "virtual_network" {
-  source    = "./modules/virtual_network"
-  vnet_name = "tftest-vnet"
+  source                   = "./modules/virtual_network"
+  vnet_resource_group_name = azurecaf_name.rg_name.result
+  # vnet_name                = "tftest-vnet"
+  vnet_name = azurecaf_name.vnet_name.result
   depends_on = [
     azurerm_resource_group.main
   ]
