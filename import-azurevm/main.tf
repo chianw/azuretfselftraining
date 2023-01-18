@@ -3,7 +3,7 @@ provider "azurerm" {
 }
 
 data "azurerm_resource_group" "myresourcegroup" {
-  name = "a-b-rg-amclu-y-z"
+  name = "myabcdresourcegroup"
 }
 
 output "myresourcegroup" {
