@@ -14,7 +14,7 @@ terraform {
 #   # Configuration options
 # }
 
-resource "azurecaf_name" "rg_name" {
+data "azurecaf_name" "rg_name" {
   resource_type = "azurerm_resource_group"
   prefixes      = ["a", "b"]
   suffixes      = ["y", "z"]
@@ -22,7 +22,7 @@ resource "azurecaf_name" "rg_name" {
   clean_input   = true
 }
 
-resource "azurecaf_name" "vnet_name" {
+data "azurecaf_name" "vnet_name" {
   resource_type = "azurerm_virtual_network"
   prefixes      = ["a", "b"]
   suffixes      = ["y", "z"]
@@ -31,7 +31,7 @@ resource "azurecaf_name" "vnet_name" {
 }
 
 resource "azurerm_resource_group" "main" {
-  name     = azurecaf_name.rg_name.result
+  name     = data.azurecaf_name.rg_name.result
   location = var.location
 }
 
@@ -44,12 +44,12 @@ resource "azurerm_resource_group" "main" {
 
 module "virtual_network" {
   source                   = "./modules/virtual_network"
-  vnet_resource_group_name = azurecaf_name.rg_name.result
+  vnet_resource_group_name = azurerm_resource_group.main.name
   # vnet_name                = "tftest-vnet"
-  vnet_name = azurecaf_name.vnet_name.result
-  depends_on = [
-    azurerm_resource_group.main
-  ]
+  vnet_name = data.azurecaf_name.vnet_name.result
+  # depends_on = [
+  #   azurerm_resource_group.main
+  # ]
 }
 
 output "virtual_network" {
