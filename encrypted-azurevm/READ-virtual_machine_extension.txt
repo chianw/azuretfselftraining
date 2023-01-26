@@ -1,0 +1,24 @@
+# from https://learn.microsoft.com/en-us/azure/virtual-machines/extensions/azure-disk-enc-linux
+# "KeyEncryptionKeyURL": "https://kv-hub-jvn-99.vault.azure.net/keys/key-hub-vm-01/yourkeyid",                  
+# "KekVaultResourceId":"/subscriptions/<your subscriptionidhere>/resourceGroups/rg-hub-jvn-management-01/providers/Microsoft.KeyVault/vaults/kv-hub-jvn-99",
+# "KeyEncryptionAlgorithm": "RSA-OAEP",
+resource "azurerm_virtual_machine_extension" "vmextension" {
+  name                       = "diskencryption_extension"
+  virtual_machine_id         = module.windows_virtual_machine.winvm_out.id
+  publisher                  = "Microsoft.Azure.Security"
+  type                       = "AzureDiskEncryption"
+  type_handler_version       = 2.2
+  auto_upgrade_minor_version = true
+
+  settings = <<SETTINGS
+    {
+        "EncryptionOperation": "EnableEncryption",
+        "KeyVaultURL": "${module.key_vault.key_vault_out.vault_uri}",
+        "KeyVaultResourceId": "${module.key_vault.key_vault_out.id}",
+        "KeyEncryptionKeyURL": "${module.key_vault.key_vault_key_out.id}",
+        "KekVaultResourceId": "${module.key_vault.key_vault_out.id}",
+        "KeyEncryptionAlgorithm": "RSA-OAEP",               
+        "VolumeType": "All"
+    }
+SETTINGS
+}
