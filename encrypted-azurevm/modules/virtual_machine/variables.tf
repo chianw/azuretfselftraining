@@ -1,7 +1,7 @@
 
 variable "vm_name" {
   type    = string
-  default = "linuxvm1"
+  default = "winvm"
 }
 
 variable "vm_location" {
@@ -21,6 +21,6 @@ variable "vm_network_interface_ids" {
 
 variable "vm_size" {
   type    = string
-  default = "Standard_B2s"
+  default = "Standard_B2ms"
 }
 
